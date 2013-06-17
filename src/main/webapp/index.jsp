@@ -61,9 +61,14 @@ body {
 				 */
 				out.println("<a href='" + helper.buildLoginUrl()
 						+ "'>log in with google</a>");
+						
+				/*
+				 * set the secure state token in session to be able to track what we sent to google
+				 */
+				session.setAttribute("state", helper.getStateToken());
 
 			} else if (request.getParameter("code") != null
-					&& request.getParameter("state").equals("google")) {
+					&& request.getParameter("state").equals(session.getAttribute("state"))) {
 
 				out.println("<pre>");
 				/*

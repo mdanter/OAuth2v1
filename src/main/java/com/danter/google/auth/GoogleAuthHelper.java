@@ -12,6 +12,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
@@ -42,6 +43,7 @@ public final class GoogleAuthHelper {
 	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	// end google authentication constants
 	
+	private String stateToken;
 	
 	private final GoogleAuthorizationCodeFlow flow;
 	
@@ -51,6 +53,8 @@ public final class GoogleAuthHelper {
 	public GoogleAuthHelper() {
 		flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT,
 				JSON_FACTORY, CLIENT_ID, CLIENT_SECRET, SCOPE).build();
+		
+		generateStateToken();
 	}
 
 	/**
@@ -60,7 +64,25 @@ public final class GoogleAuthHelper {
 		
 		final GoogleAuthorizationCodeRequestUrl url = flow.newAuthorizationUrl();
 		
-		return url.setRedirectUri(CALLBACK_URI).setState("google").build();
+		return url.setRedirectUri(CALLBACK_URI).setState(stateToken).build();
+	}
+	
+	/**
+	 * Generates a secure state token 
+	 */
+	private void generateStateToken(){
+		
+		SecureRandom sr1 = new SecureRandom();
+		
+		stateToken = "google;"+sr1.nextInt();
+		
+	}
+	
+	/**
+	 * Accessor for state token
+	 */
+	public String getStateToken(){
+		return stateToken;
 	}
 	
 	/**
