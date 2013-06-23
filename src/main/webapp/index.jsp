@@ -67,8 +67,10 @@ body {
 				 */
 				session.setAttribute("state", helper.getStateToken());
 
-			} else if (request.getParameter("code") != null
+			} else if (request.getParameter("code") != null && request.getParameter("state") != null
 					&& request.getParameter("state").equals(session.getAttribute("state"))) {
+
+				session.removeAttribute("state");
 
 				out.println("<pre>");
 				/*
